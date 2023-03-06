@@ -13,7 +13,7 @@
             android:id="@+id/divider"
             android:layout_width="4dp"
             android:layout_height="match_parent"
-            android:background="#F44336"/>
+            android:background="#3F51B5"/>
 
         <TextView
             android:id="@+id/statusTxt"
@@ -27,7 +27,7 @@
             android:textStyle="bold" />
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="60dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:orientation="vertical">
@@ -39,15 +39,17 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:textSize="13sp"
-                android:text="MAR 21"/>
+                android:fontFamily="@font/alatsi"
+                android:text="--"/>
 
             <TextView
                 android:id="@+id/timeTxt"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
+                android:fontFamily="@font/alatsi"
                 android:textSize="13sp"
-                android:text="07:02 AM"/>
+                android:text="--"/>
 
         </LinearLayout>
 

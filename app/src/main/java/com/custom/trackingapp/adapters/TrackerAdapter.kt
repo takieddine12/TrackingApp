@@ -11,43 +11,82 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 
-class TrackerAdapter(var events : ArrayList<Event>) : RecyclerView.Adapter<TrackerAdapter.TrackerHolder>() {
+class TrackerAdapter(var events : ArrayList<Event>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    inner class TrackerHolder(var itemView : View) : RecyclerView.ViewHolder(itemView){
+    inner class FirstTrackHolder(private var itemView : View) : RecyclerView.ViewHolder(itemView){
+        var divider = itemView.findViewById<View>(R.id.divider)
+        var statusTxt = itemView.findViewById<TextView>(R.id.statusTxt)
+        var dateTxt = itemView.findViewById<TextView>(R.id.dayTxt)
+        var timeTxt = itemView.findViewById<TextView>(R.id.timeTxt)
+    }
+    inner class NormalTrackHolder(private var itemView : View) : RecyclerView.ViewHolder(itemView){
        var divider = itemView.findViewById<View>(R.id.divider)
        var statusTxt = itemView.findViewById<TextView>(R.id.statusTxt)
        var dateTxt = itemView.findViewById<TextView>(R.id.dayTxt)
        var timeTxt = itemView.findViewById<TextView>(R.id.timeTxt)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TrackerHolder {
-       val view = LayoutInflater.from(parent.context).inflate(R.layout.rows_layout,parent,false)
-       return TrackerHolder(view)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        if(viewType == FIRST_ITEM){
+            val view = LayoutInflater.from(parent.context).inflate(R.layout.first_row_layout,parent,false)
+            return FirstTrackHolder(view)
+        } else  {
+            val view = LayoutInflater.from(parent.context).inflate(R.layout.normal_row_layout,parent,false)
+            return NormalTrackHolder(view)
+        }
     }
 
-    override fun onBindViewHolder(holder: TrackerHolder, position: Int) {
-       val event = events[position]
-       holder.statusTxt.text = event.status
-       holder.dateTxt.text = event.datetime.substring(0,3)
-       holder.timeTxt.text = event.datetime.subSequence(0,3)
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        val event = events[position]
+        if(holder.itemViewType == FIRST_ITEM){
+            val firstItemHolder = holder as FirstTrackHolder
+            firstItemHolder.statusTxt.text = event.status
+            firstItemHolder.dateTxt.text = formatDate(event.datetime)
+            if(formatTime(event.datetime).substring(0,2).toInt() >= 12){
+                firstItemHolder.timeTxt.text = formatTime(event.datetime + " pm")
+            } else {
+                firstItemHolder.timeTxt.text = formatTime(event.datetime + " am")
+            }
+        } else if (holder.itemViewType == NORMAL_ITEM){
+            val normalItemHolder = holder as NormalTrackHolder
+            normalItemHolder.statusTxt.text = event.status
+            normalItemHolder.dateTxt.text = formatDate(event.datetime)
+            if(formatTime(event.datetime).substring(0,2).toInt() >= 12){
+                normalItemHolder.timeTxt.text = formatTime(event.datetime + " pm")
+            } else {
+                normalItemHolder.timeTxt.text = formatTime(event.datetime + " am")
+            }
+        }
     }
 
     override fun getItemCount(): Int {
-       return  events.size
+        return events.size
     }
-    fun clearList(){
-        events.clear()
+
+    override fun getItemViewType(position: Int): Int {
+        if(position == 0){
+            return  FIRST_ITEM
+        } else {
+            return NORMAL_ITEM
+        }
     }
+
     private fun formatDate(time: String): String {
-        val dateFormat1 = SimpleDateFormat("yyyy-MM-dd hh:mm:ss Z", Locale.getDefault())
+        val dateFormat1 = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS", Locale.getDefault())
         val date1 = dateFormat1.parse(time)
-        val dateFormat2 = SimpleDateFormat("MM/dd", Locale.getDefault())
+        val dateFormat2 = SimpleDateFormat("MMM dd", Locale.getDefault())
         return dateFormat2.format(date1!!)
     }
     private fun formatTime(time: String): String {
-        val dateFormat1 = SimpleDateFormat("yyyy-MM-dd hh:mm:ss Z", Locale.getDefault())
+        val dateFormat1 = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS", Locale.getDefault())
         val date1 = dateFormat1.parse(time)
         val dateFormat2 = SimpleDateFormat("hh:mm", Locale.getDefault())
         return dateFormat2.format(date1!!)
     }
+
+    companion object {
+        const val FIRST_ITEM = 0
+        const val NORMAL_ITEM  = 1
+    }
+
 }
