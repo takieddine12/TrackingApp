@@ -35,14 +35,14 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
         binding.look.setOnClickListener {
             val trackingNumber = binding.trackingNumberEdit.text.toString()
-//            if(TextUtils.isEmpty(trackingNumber)){
-//                Toast.makeText(this,"No Tracking Number Provided",Toast.LENGTH_SHORT).show()
-//                return@setOnClickListener
-//            }
+           if(TextUtils.isEmpty(trackingNumber)){
+               Toast.makeText(this,"No Tracking Number Provided",Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+           }
 
             // move further
             lifecycleScope.launch {
-                appViewModel.createTracker(PostModel("SYAE013276366"),Tools.bearerToken).collectLatest {
+                appViewModel.createTracker(PostModel(trackingNumber),Tools.bearerToken).collectLatest {
                     binding.progressBar.visibility = View.VISIBLE
                     delay(4000)
                     getTrackingInfo(it.data.tracker.trackerId)
