@@ -12,4 +12,6 @@ interface AppRepositoryImpl {
     suspend fun getTrackingResult(trackerId : String , token : String) : Flow<ResultsModel>
     suspend fun fetchAllPackages() : Flow<MutableList<PackageModel>>
     suspend fun insertPackage(packageModel: PackageModel)
+    suspend fun deletePackages()
+    suspend fun deleteDuplicates()
 }

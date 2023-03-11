@@ -11,6 +11,17 @@ import com.custom.trackingapp.models.parcel.PackageModel
 
 class PackageAdapter(private var parcels : MutableList<PackageModel>) : RecyclerView.Adapter<PackageAdapter.PackageHolder>() {
 
+
+    private var listener : OnPackageClickListener? = null
+    public interface OnPackageClickListener {
+        fun onPackage(packageNumber : String)
+    }
+
+    public fun onPackageClicked(listener : OnPackageClickListener){
+        this.listener = listener;
+    }
+
+
     inner class PackageHolder(private var itemView : View) : RecyclerView.ViewHolder(itemView){
         var packageNumber: TextView = itemView.findViewById<TextView>(R.id.packageNumber)
         var searchPackage: ImageView = itemView.findViewById<ImageView>(R.id.search)
@@ -25,7 +36,12 @@ class PackageAdapter(private var parcels : MutableList<PackageModel>) : Recycler
         val pack = parcels[position]
         holder.packageNumber.text = pack.packageNumber
         holder.searchPackage.setOnClickListener {
-
+            if(listener != null){
+                val pos = holder.adapterPosition
+                if(pos != RecyclerView.NO_POSITION){
+                    listener!!.onPackage(packageNumber = pack.packageNumber)
+                }
+            }
         }
     }
 

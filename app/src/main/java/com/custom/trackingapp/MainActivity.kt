@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
 import android.view.View
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -46,12 +47,12 @@ class MainActivity : AppCompatActivity() {
                 return@setOnClickListener
            }
 
-            appViewModel.insertPackage(PackageModel(trackingNumber,R.drawable.old_package))
+            appViewModel.insertPackage(PackageModel(trackingNumber))
             // move further
             lifecycleScope.launch {
                 appViewModel.createTracker(PostModel(trackingNumber),Tools.bearerToken).collectLatest {
                     binding.progressBar.visibility = View.VISIBLE
-                    delay(4000)
+                    delay(6000)
                     getTrackingInfo(it.data.tracker.trackerId)
                     Log.d("TAG","Tracker ID" + it.data.tracker.trackerId)
                 }
@@ -117,22 +118,40 @@ class MainActivity : AppCompatActivity() {
         val bottomSheetDialog = BottomSheetDialog(this)
         bottomSheetDialog.setContentView(R.layout.bottom_sheet_dialog)
 
+        appViewModel.deleteDuplicates()
+
+        val imageView = bottomSheetDialog.findViewById<ImageView>(R.id.deleteAll)
         val recyclerView = bottomSheetDialog.findViewById<RecyclerView>(R.id.bottomRecycler)
+
+        imageView!!.setOnClickListener {
+            appViewModel.deletePackages()
+        }
+
+
         val layoutManager = LinearLayoutManager(this)
         recyclerView!!.layoutManager = layoutManager
         recyclerView.setHasFixedSize(true)
-
-
         appViewModel.getPackages()
         appViewModel.packagesLiveData.observe(this) { oldPackages ->
 
             packageAdapter = PackageAdapter(oldPackages)
             recyclerView.adapter = packageAdapter
+            packageAdapter.onPackageClicked(object : PackageAdapter.OnPackageClickListener{
+                override fun onPackage(packageNumber: String) {
+                    lifecycleScope.launch {
+                        appViewModel.createTracker(PostModel(packageNumber),Tools.bearerToken).collectLatest {
+                            binding.progressBar.visibility = View.VISIBLE
+                            delay(6000)
+                            getTrackingInfo(it.data.tracker.trackerId)
+
+                            Log.d("TAG","Tracker ID" + it.data.tracker.trackerId)
+                        }
+                    }
+                    bottomSheetDialog.dismiss()
+                }
+            })
 
         }
-
-
-
 
         bottomSheetDialog.show()
     }

@@ -54,8 +54,16 @@ class AppViewModel @Inject constructor(
            appRepository.insertPackage(packageModel)
        }
     }
-
-
+    fun deletePackages(){
+        viewModelScope.launch {
+            appRepository.deletePackages()
+        }
+    }
+    fun deleteDuplicates(){
+        viewModelScope.launch {
+            appRepository.deleteDuplicates()
+        }
+    }
 
     sealed class UiStates{
         object LOADING : UiStates()

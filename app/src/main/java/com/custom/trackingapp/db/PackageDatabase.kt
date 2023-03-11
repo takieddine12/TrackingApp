@@ -7,5 +7,5 @@ import com.custom.trackingapp.models.parcel.PackageModel
 @Database(entities = [PackageModel::class], version = 1, exportSchema = false)
 abstract  class PackageDatabase : RoomDatabase() {
 
-    abstract fun getPackageDao() : PackageDb
+    abstract fun getPackageDao() : PackageDao
 }

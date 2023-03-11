@@ -1,6 +1,6 @@
 package com.custom.trackingapp.repositories
 
-import com.custom.trackingapp.db.PackageDb
+import com.custom.trackingapp.db.PackageDao
 import com.custom.trackingapp.models.PostModel
 import com.custom.trackingapp.models.parcel.PackageModel
 import com.custom.trackingapp.models.results.ResultsModel
@@ -12,7 +12,7 @@ import javax.inject.Inject
 
 class AppRepository  @Inject constructor(
     private  var workService: WorkService,
-    private  var packageDb: PackageDb
+    private  var packageDao : PackageDao
 ) : AppRepositoryImpl{
     override suspend fun getTrackingInfo(postModel: PostModel,token: String): Flow<TrackerModel> {
          return  flow {
@@ -28,11 +28,19 @@ class AppRepository  @Inject constructor(
 
     override suspend fun fetchAllPackages(): Flow<MutableList<PackageModel>> {
         return flow {
-            emit(packageDb.fetchPackages())
+            emit(packageDao.fetchPackages())
         }
     }
 
     override suspend fun insertPackage(packageModel: PackageModel) {
-        packageDb.insertPackage(packageModel)
+        packageDao.insertPackage(packageModel)
+    }
+
+    override suspend fun deletePackages() {
+        packageDao.deletePackages()
+    }
+
+    override suspend fun deleteDuplicates() {
+        packageDao.deleteDuplicates()
     }
 }

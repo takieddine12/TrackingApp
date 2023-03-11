@@ -6,7 +6,6 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "package")
 data class PackageModel(
     var packageNumber : String = "",
-    var packageIcon : Int? = null,
 ){
     @PrimaryKey(autoGenerate = true)
     var packageID : Long? = null
