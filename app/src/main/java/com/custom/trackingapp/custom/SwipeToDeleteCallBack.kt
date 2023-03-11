@@ -50,19 +50,19 @@ open class SwipeToDeleteCallBack(mContext: Context) : ItemTouchHelper.Callback()
         val isCancelled = dX == 0f && !isCurrentlyActive
 
         if (isCancelled) {
-            clearCanvas(c, itemView.right + dX, itemView.top.toFloat(), itemView.right.toFloat(), itemView.bottom.toFloat())
+            clearCanvas(c, itemView.left + dX, itemView.top.toFloat(), itemView.left.toFloat(), itemView.bottom.toFloat())
             super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
             return
         }
 
         mBackground!!.color = backgroundColor
-        mBackground!!.setBounds(itemView.right + dX.toInt(), itemView.top, itemView.right, itemView.bottom)
+        mBackground!!.setBounds(itemView.left + dX.toInt(), itemView.top, itemView.left, itemView.bottom)
         mBackground!!.draw(c)
 
         val deleteIconTop: Int = itemView.top + (itemHeight - intrinsicHeight) / 2
         val deleteIconMargin = (itemHeight - intrinsicHeight) / 2
-        val deleteIconLeft: Int = itemView.right - deleteIconMargin - intrinsicWidth
-        val deleteIconRight: Int = itemView.right - deleteIconMargin
+        val deleteIconLeft: Int = itemView.left - deleteIconMargin - intrinsicWidth
+        val deleteIconRight: Int = itemView.left - deleteIconMargin
         val deleteIconBottom = deleteIconTop + intrinsicHeight
 
 
