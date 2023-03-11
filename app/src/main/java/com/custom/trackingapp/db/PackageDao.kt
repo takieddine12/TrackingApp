@@ -12,6 +12,9 @@ interface PackageDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertPackage(packageModel: PackageModel)
 
+    @Query("DELETE FROM package WHERE packageID = :packageID")
+    suspend fun deletePackage(packageID : Long)
+
     @Query("DELETE FROM package")
     suspend fun deletePackages()
 

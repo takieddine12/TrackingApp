@@ -36,6 +36,10 @@ class AppRepository  @Inject constructor(
         packageDao.insertPackage(packageModel)
     }
 
+    override suspend fun deletePackage(packageID : Long) {
+        packageDao.deletePackage(packageID)
+    }
+
     override suspend fun deletePackages() {
         packageDao.deletePackages()
     }

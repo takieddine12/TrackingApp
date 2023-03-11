@@ -1,19 +1,23 @@
 package com.custom.trackingapp
 
 
+import android.graphics.Color
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
 import android.view.View
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.custom.trackingapp.adapters.PackageAdapter
 import com.custom.trackingapp.adapters.TrackerAdapter
+import com.custom.trackingapp.custom.SwipeToDeleteCallBack
 import com.custom.trackingapp.databinding.ActivityMainBinding
 import com.custom.trackingapp.models.PostModel
 import com.custom.trackingapp.models.parcel.PackageModel
@@ -22,7 +26,9 @@ import com.custom.trackingapp.models.results.Shipment
 import com.custom.trackingapp.models.results.Statistics
 import com.custom.trackingapp.viewmodels.AppViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
+import hilt_aggregated_deps._dagger_hilt_android_internal_lifecycle_DefaultViewModelFactories_ActivityEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -122,6 +128,7 @@ class MainActivity : AppCompatActivity() {
 
         val imageView = bottomSheetDialog.findViewById<ImageView>(R.id.deleteAll)
         val recyclerView = bottomSheetDialog.findViewById<RecyclerView>(R.id.bottomRecycler)
+        val linearLayout = bottomSheetDialog.findViewById<LinearLayout>(R.id.linearLayout)
 
         imageView!!.setOnClickListener {
             if(appViewModel.packagesLiveData.value!!.isEmpty()){
@@ -143,6 +150,7 @@ class MainActivity : AppCompatActivity() {
             recyclerView.adapter = packageAdapter
             packageAdapter.onPackageClicked(object : PackageAdapter.OnPackageClickListener{
                 override fun onPackage(packageNumber: String) {
+                    binding.trackingNumber.text = packageNumber
                     lifecycleScope.launch {
                         appViewModel.createTracker(PostModel(packageNumber),Tools.bearerToken).collectLatest {
                             binding.progressBar.visibility = View.VISIBLE
@@ -158,6 +166,30 @@ class MainActivity : AppCompatActivity() {
 
         }
 
+        enableSwipeToDeleteAndUndo(recyclerView,linearLayout!!)
+
         bottomSheetDialog.show()
     }
+
+    private fun enableSwipeToDeleteAndUndo(recyclerView : RecyclerView,linearLayout: LinearLayout) {
+        val swipeToDeleteCallback = object : SwipeToDeleteCallBack(this) {
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, i: Int) {
+                val position = viewHolder.adapterPosition
+                val item = packageAdapter.getData(position)
+                packageAdapter.removeItem(position)
+                packageAdapter.notifyByPosition(position)
+                appViewModel.deletePackage(position.toLong())
+//                val snackbar = Snackbar.make(linearLayout, "Item was removed from the list.", Snackbar.LENGTH_LONG)
+//                snackbar.setAction("UNDO") {
+//                    packageAdapter.restoreItem(item, position)
+//                    recyclerView.scrollToPosition(position)
+//                }
+//                snackbar.setActionTextColor(Color.YELLOW)
+//                snackbar.show()
+            }
+        }
+        val itemTouchHelper = ItemTouchHelper(swipeToDeleteCallback)
+        itemTouchHelper.attachToRecyclerView(recyclerView)
+    }
+
 }

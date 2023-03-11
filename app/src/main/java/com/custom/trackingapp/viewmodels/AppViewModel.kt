@@ -54,6 +54,11 @@ class AppViewModel @Inject constructor(
            appRepository.insertPackage(packageModel)
        }
     }
+    fun deletePackage(packageID : Long){
+        viewModelScope.launch {
+            appRepository.deletePackage(packageID)
+        }
+    }
     fun deletePackages(){
         viewModelScope.launch {
             appRepository.deletePackages()

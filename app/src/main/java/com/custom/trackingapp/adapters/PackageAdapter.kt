@@ -1,5 +1,6 @@
 package com.custom.trackingapp.adapters
 
+import android.R.attr.data
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,6 +9,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.custom.trackingapp.R
 import com.custom.trackingapp.models.parcel.PackageModel
+
 
 class PackageAdapter(private var parcels : MutableList<PackageModel>) : RecyclerView.Adapter<PackageAdapter.PackageHolder>() {
 
@@ -47,6 +49,25 @@ class PackageAdapter(private var parcels : MutableList<PackageModel>) : Recycler
 
     override fun getItemCount(): Int {
         return parcels.size
+    }
+
+
+    fun removeItem(position: Int) {
+        parcels.removeAt(position)
+        notifyItemRemoved(position)
+    }
+
+    fun restoreItem(packageModel : PackageModel , position: Int) {
+        parcels.add(position, packageModel)
+        notifyItemInserted(position)
+    }
+
+    fun getData(position : Int): PackageModel {
+        return parcels[position]
+    }
+
+    fun notifyByPosition(position : Int){
+        notifyItemRemoved(position)
     }
 
 
