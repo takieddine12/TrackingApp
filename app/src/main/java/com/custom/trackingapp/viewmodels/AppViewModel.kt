@@ -3,9 +3,8 @@ package com.custom.trackingapp.viewmodels
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.custom.trackingapp.db.PackageDb
 import com.custom.trackingapp.models.PostModel
-import com.custom.trackingapp.models.`package`.PackageModel
+import com.custom.trackingapp.models.parcel.PackageModel
 import com.custom.trackingapp.models.results.ResultsModel
 import com.custom.trackingapp.models.tracker.TrackerModel
 import com.custom.trackingapp.repositories.AppRepository
@@ -15,7 +14,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import retrofit2.http.Body
 import javax.inject.Inject
 
 @HiltViewModel

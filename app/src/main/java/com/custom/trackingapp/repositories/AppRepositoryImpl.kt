@@ -1,11 +1,10 @@
 package com.custom.trackingapp.repositories
 
 import com.custom.trackingapp.models.PostModel
-import com.custom.trackingapp.models.`package`.PackageModel
+import com.custom.trackingapp.models.parcel.PackageModel
 import com.custom.trackingapp.models.results.ResultsModel
 import com.custom.trackingapp.models.tracker.TrackerModel
 import kotlinx.coroutines.flow.Flow
-import retrofit2.http.Body
 
 interface AppRepositoryImpl {
 

@@ -1,8 +1,7 @@
 package com.custom.trackingapp.db
 
 import androidx.room.*
-import com.custom.trackingapp.models.`package`.PackageModel
-import kotlinx.coroutines.flow.Flow
+import com.custom.trackingapp.models.parcel.PackageModel
 
 @Dao
 interface PackageDb {

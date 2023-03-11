@@ -1,4 +1,4 @@
-package com.custom.trackingapp.models.`package`
+package com.custom.trackingapp.models.parcel
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

@@ -5,15 +5,17 @@ import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
 import android.view.View
-import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.custom.trackingapp.adapters.PackageAdapter
 import com.custom.trackingapp.adapters.TrackerAdapter
 import com.custom.trackingapp.databinding.ActivityMainBinding
 import com.custom.trackingapp.models.PostModel
+import com.custom.trackingapp.models.parcel.PackageModel
 import com.custom.trackingapp.models.results.Event
 import com.custom.trackingapp.models.results.Shipment
 import com.custom.trackingapp.models.results.Statistics
@@ -29,7 +31,7 @@ import java.util.*
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
-
+    private lateinit var packageAdapter: PackageAdapter
     private val appViewModel : AppViewModel by viewModels()
     private lateinit var trackerAdapter: TrackerAdapter
     private lateinit var binding : ActivityMainBinding
@@ -44,6 +46,7 @@ class MainActivity : AppCompatActivity() {
                 return@setOnClickListener
            }
 
+            appViewModel.insertPackage(PackageModel(trackingNumber,R.drawable.old_package))
             // move further
             lifecycleScope.launch {
                 appViewModel.createTracker(PostModel(trackingNumber),Tools.bearerToken).collectLatest {
@@ -58,7 +61,6 @@ class MainActivity : AppCompatActivity() {
         val layoutManager = LinearLayoutManager(this)
         binding.recyclerView.layoutManager = layoutManager
         binding.recyclerView.setHasFixedSize(true)
-
         binding.getPackage.setOnClickListener {
             showOldPackages()
         }
@@ -114,6 +116,21 @@ class MainActivity : AppCompatActivity() {
     private fun showOldPackages(){
         val bottomSheetDialog = BottomSheetDialog(this)
         bottomSheetDialog.setContentView(R.layout.bottom_sheet_dialog)
+
+        val recyclerView = bottomSheetDialog.findViewById<RecyclerView>(R.id.bottomRecycler)
+        val layoutManager = LinearLayoutManager(this)
+        recyclerView!!.layoutManager = layoutManager
+        recyclerView.setHasFixedSize(true)
+
+
+        appViewModel.getPackages()
+        appViewModel.packagesLiveData.observe(this) { oldPackages ->
+
+            packageAdapter = PackageAdapter(oldPackages)
+            recyclerView.adapter = packageAdapter
+
+        }
+
 
 
 

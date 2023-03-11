@@ -2,13 +2,12 @@ package com.custom.trackingapp.repositories
 
 import com.custom.trackingapp.db.PackageDb
 import com.custom.trackingapp.models.PostModel
-import com.custom.trackingapp.models.`package`.PackageModel
+import com.custom.trackingapp.models.parcel.PackageModel
 import com.custom.trackingapp.models.results.ResultsModel
 import com.custom.trackingapp.models.tracker.TrackerModel
 import com.custom.trackingapp.network.WorkService
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import retrofit2.http.Body
 import javax.inject.Inject
 
 class AppRepository  @Inject constructor(

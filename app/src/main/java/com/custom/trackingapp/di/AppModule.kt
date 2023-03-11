@@ -39,12 +39,11 @@ object AppModule {
             .build().create(WorkService::class.java)
     }
 
-    // DB
 
     @Singleton
     @Provides
     fun provideDatabase(@ApplicationContext context : Context) = Room.databaseBuilder(context.applicationContext,
-    PackageDatabase::class.java,"package.db").fallbackToDestructiveMigration().build()
+    PackageDatabase::class.java,"package.db").allowMainThreadQueries().fallbackToDestructiveMigration().build()
 
 
     @Singleton
