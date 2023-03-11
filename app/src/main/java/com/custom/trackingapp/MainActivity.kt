@@ -124,7 +124,12 @@ class MainActivity : AppCompatActivity() {
         val recyclerView = bottomSheetDialog.findViewById<RecyclerView>(R.id.bottomRecycler)
 
         imageView!!.setOnClickListener {
-            appViewModel.deletePackages()
+            if(appViewModel.packagesLiveData.value!!.isEmpty()){
+                Toast.makeText(this,"No package to delete",Toast.LENGTH_SHORT).show()
+            } else {
+                appViewModel.deletePackages()
+                bottomSheetDialog.dismiss()
+            }
         }
 
 
