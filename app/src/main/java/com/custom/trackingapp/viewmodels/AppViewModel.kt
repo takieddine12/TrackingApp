@@ -1,8 +1,11 @@
 package com.custom.trackingapp.viewmodels
 
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.custom.trackingapp.db.PackageDb
 import com.custom.trackingapp.models.PostModel
+import com.custom.trackingapp.models.`package`.PackageModel
 import com.custom.trackingapp.models.results.ResultsModel
 import com.custom.trackingapp.models.tracker.TrackerModel
 import com.custom.trackingapp.repositories.AppRepository
@@ -22,12 +25,11 @@ class AppViewModel @Inject constructor(
 
     private val _trackingStateFlow : MutableStateFlow<UiStates>  = MutableStateFlow(UiStates.EMPTY)
     val state : StateFlow<UiStates> get() = _trackingStateFlow
-
+    var packagesLiveData : MutableLiveData<MutableList<PackageModel>> = MutableLiveData()
 
     suspend  fun createTracker(postModel: PostModel,token: String): Flow<TrackerModel> {
         return appRepository.getTrackingInfo(postModel,token)
     }
-
     fun getTrackingResult(trackerId : String , token : String){
         viewModelScope.launch {
             try {
@@ -39,6 +41,20 @@ class AppViewModel @Inject constructor(
                 _trackingStateFlow.value = UiStates.ERROR(ex.message!!)
             }
         }
+    }
+
+    // DB
+    fun getPackages(){
+        viewModelScope.launch {
+            appRepository.fetchAllPackages().collectLatest {
+                packagesLiveData.value = it
+            }
+        }
+    }
+    fun insertPackage(packageModel: PackageModel){
+       viewModelScope.launch {
+           appRepository.insertPackage(packageModel)
+       }
     }
 
 

@@ -1,12 +1,14 @@
 package com.custom.trackingapp
 
-import androidx.appcompat.app.AppCompatActivity
+
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
 import android.view.View
+import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.custom.trackingapp.adapters.TrackerAdapter
@@ -16,12 +18,14 @@ import com.custom.trackingapp.models.results.Event
 import com.custom.trackingapp.models.results.Shipment
 import com.custom.trackingapp.models.results.Statistics
 import com.custom.trackingapp.viewmodels.AppViewModel
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
+
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -55,6 +59,10 @@ class MainActivity : AppCompatActivity() {
         binding.recyclerView.layoutManager = layoutManager
         binding.recyclerView.setHasFixedSize(true)
 
+        binding.getPackage.setOnClickListener {
+            showOldPackages()
+        }
+
     }
 
     private suspend fun getTrackingInfo(trackerId : String){
@@ -80,7 +88,6 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
-
     private fun setUpUi(it : ArrayList<Event>, data : Shipment, stats: Statistics){
         binding.trackingNumber.text = data.trackingNumbers[0].tn
         binding.status.text = data.statusMilestone
@@ -103,5 +110,13 @@ class MainActivity : AppCompatActivity() {
         val date1 = dateFormat1.parse(time)
         val dateFormat2 = SimpleDateFormat("MMM dd,yyyy hh:mm", Locale.getDefault())
         return dateFormat2.format(date1!!)
+    }
+    private fun showOldPackages(){
+        val bottomSheetDialog = BottomSheetDialog(this)
+        bottomSheetDialog.setContentView(R.layout.bottom_sheet_dialog)
+
+
+
+        bottomSheetDialog.show()
     }
 }
